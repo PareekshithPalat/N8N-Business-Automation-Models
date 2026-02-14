@@ -36,6 +36,32 @@ An intelligent email management system that automatically monitors a Gmail inbox
 3. **Activate:**
    - Set the workflow to **Active** to start the one-minute polling cycle.
 
+### Automation B: Smart Lead Capture System
+**File:** [Smart Lead Capture.json](./Smart%20Lead%20Capture.json)
+
+#### 📝 Description
+A high-performance lead generation and nurturing system that captures leads via webhooks, organizes them in Google Sheets, and uses AI to craft personalized welcome emails before notifying the sales team.
+
+#### 🛠️ Functionality
+- **Webhook Integration:** Entry point for lead data from any website form or third-party source.
+- **Data Persistence:** Automatically appends new lead details (Name, Email, Company, Phone, Message) to a centralized **Google Sheet**.
+- **AI Personalization:** Leverages Gemini AI to:
+    - Write a friendly, professional, and personalized welcome email based on the lead's company and message.
+    - Generate a contextually relevant email subject line.
+- **Automated Communication:** Sends the AI-generated email through Gmail immediately after capture.
+- **Instant Notification:** Pushes the full lead profile to a **Slack** `#sales` channel for rapid follow-up.
+
+#### ⚙️ How to Run
+1. **Import the Workflow:**
+   - Import the `Smart Lead Capture.json` file into your n8n instance.
+2. **Configure External Services:**
+   - **Google Sheets:** Select your target spreadsheet and sheet name.
+   - **Google Gemini:** Uses the same PaLM/Gemini credentials for email body and subject generation.
+   - **Gmail:** Connect your sender account.
+   - **Slack:** Set the channel to your sales team's notification channel.
+3. **Webhook Setup:**
+   - Copy the Webhook URL and point your lead source (e.g., a Webflow or Elementor form) to this endpoint.
+
 ---
 
 ## 📥 General Setup Instructions

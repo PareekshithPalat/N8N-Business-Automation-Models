@@ -1,0 +1,432 @@
+{
+  "name": "Smart Lead Capture",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "0b1cc23a-6c68-4b6d-8c8c-867e911e5330",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        -272,
+        0
+      ],
+      "id": "a02ffe5d-7c78-42eb-ab79-2fea3d67a921",
+      "name": "Webhook",
+      "webhookId": "0b1cc23a-6c68-4b6d-8c8c-867e911e5330"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "9aba118d-9046-4c5c-9807-ab47d7953356",
+              "name": "body.name",
+              "value": "={{ $json.body.name }}",
+              "type": "string"
+            },
+            {
+              "id": "9d32c6a5-57e8-4dba-b83a-818d9179212e",
+              "name": "body.email",
+              "value": "={{ $json.body.email }}",
+              "type": "string"
+            },
+            {
+              "id": "7c5f0046-9813-4d3a-a0c4-4833b7c59292",
+              "name": "body.company",
+              "value": "={{ $json.body.company }}",
+              "type": "string"
+            },
+            {
+              "id": "e2256fa4-982b-4364-b5a9-28fe374d004b",
+              "name": "body.phone",
+              "value": "={{ $json.body.phone }}",
+              "type": "string"
+            },
+            {
+              "id": "8b54fa4e-5026-4777-ae70-6cb8016f9942",
+              "name": "body.message",
+              "value": "={{ $json.body.message }}",
+              "type": "string"
+            },
+            {
+              "id": "4ec73204-8202-46f1-9ad1-8cb9a3a1338e",
+              "name": "body.source",
+              "value": "={{ $json.body.source }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -48,
+        0
+      ],
+      "id": "723c56ad-b5f1-423a-965b-c975891f8284",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1yGO_mbtJs5kFJXAzmQG0Nmp6FuNUYSRyHs-sybqH5y0",
+          "mode": "list",
+          "cachedResultName": "N8N usage sheets",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1yGO_mbtJs5kFJXAzmQG0Nmp6FuNUYSRyHs-sybqH5y0/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1yGO_mbtJs5kFJXAzmQG0Nmp6FuNUYSRyHs-sybqH5y0/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Full Name": "={{ $json.body.name }}",
+            " Email": "={{ $json.body.email }}",
+            "Company": "={{ $json.body.company }}",
+            "Phone": "={{ $json.body.phone }}",
+            "Message": "={{ $json.body.message }}",
+            "source": "={{ $json.body.source }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "Full Name",
+              "displayName": "Full Name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": " Email",
+              "displayName": " Email",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Company",
+              "displayName": "Company",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Phone",
+              "displayName": "Phone",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Message",
+              "displayName": "Message",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "source",
+              "displayName": "source",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        176,
+        0
+      ],
+      "id": "0967895b-39a6-490f-8863-610b6ef603cc",
+      "name": "Append row in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "6qt6bxC6hkLqdIym",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "models/gemini-2.5-flash",
+          "mode": "list",
+          "cachedResultName": "models/gemini-2.5-flash"
+        },
+        "messages": {
+          "values": [
+            {
+              "content": "=You are a sales assistant.\n\nWrite a short, professional, friendly welcome email to a new lead.\ndo not add subject onoy the body contents are needed.\nTone: Confident, helpful, not pushy.\nKeep it under 150 words.\n\nThe Lead name should be fetched from : \n {{ $json['Full Name'] }}\nThe email should be fetched from :\n{{ $json[' Email'] }}\nThe Company should be fetched from : \n{{ $json.Company }}\n\ndo not add any un attended place holders in the gmail content ."
+            }
+          ]
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.googleGemini",
+      "typeVersion": 1.1,
+      "position": [
+        384,
+        0
+      ],
+      "id": "f8ffe148-3639-4a10-9f02-fb140070feb7",
+      "name": "Message a model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "520cx0wrnbMiHu5O",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $('Append row in sheet').item.json[' Email'] }}",
+        "subject": "={{ $json.content.parts[0].text }}",
+        "message": "={{ $('Edit Fields1').item.json.content.parts[0].text }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        1248,
+        0
+      ],
+      "id": "7199fd3e-b463-4af8-9e35-5802a3517c42",
+      "name": "Send a message1",
+      "webhookId": "ad417c9e-3c75-4424-8498-4bcbff1940ed",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "NfBTEsnKqwDReWVo",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "select": "channel",
+        "channelId": {
+          "__rl": true,
+          "value": "C0AEW565SD9",
+          "mode": "list",
+          "cachedResultName": "sales"
+        },
+        "text": "={{ $('Append row in sheet').item.json['Full Name'] }}\n{{ $('Append row in sheet').item.json[' Email'] }}\n{{ $('Append row in sheet').item.json.Company }}\n{{ $('Append row in sheet').item.json.Phone }}\n{{ $('Append row in sheet').item.json.Message }}\n{{ $('Append row in sheet').item.json.source }}",
+        "otherOptions": {}
+      },
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 2.4,
+      "position": [
+        1408,
+        0
+      ],
+      "id": "23ef2025-fa91-4a1a-9485-08176d5273bf",
+      "name": "Send a message",
+      "webhookId": "11b68d54-7b3e-4936-a3ca-7872712808a1",
+      "credentials": {
+        "slackApi": {
+          "id": "snjj27cwDwM7uTwP",
+          "name": "Slack account 3"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "models/gemini-2.5-flash",
+          "mode": "list",
+          "cachedResultName": "models/gemini-2.5-flash"
+        },
+        "messages": {
+          "values": [
+            {
+              "content": "=you are an professional email subject creator . your job is to analyze the body of the email :\n {{ $json.content.parts[0].text }}\nand then produce an suitable and professional level subject related and solely oriented to the body . and your response should be only the email subject and no extra content should be given as response which is an strict guideline you have to follow."
+            }
+          ]
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.googleGemini",
+      "typeVersion": 1.1,
+      "position": [
+        912,
+        0
+      ],
+      "id": "cdd4649b-7f77-44b8-b962-237e43d89497",
+      "name": "Message a model1",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "520cx0wrnbMiHu5O",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "2d20f568-f6c8-4e01-bb80-2c379fd02706",
+              "name": "content.parts[0].text",
+              "value": "={{ $json.content.parts[0].text }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        704,
+        0
+      ],
+      "id": "72fbaa5f-b96d-4a08-aef0-f07812f3c62a",
+      "name": "Edit Fields1"
+    },
+    {
+      "parameters": {
+        "content": "# Smart Lead Capture\n\nA) Problem: Manual lead handling. \nB) Automation: Trigger: Webhook (connect to form)\n C) Store in Google Sheets  \nD) Send personalized AI-generated welcome email\n E) Notify sales team on Slack",
+        "height": 208,
+        "width": 384,
+        "color": 4
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        512,
+        -336
+      ],
+      "typeVersion": 1,
+      "id": "24794c52-5cd1-4d04-b5c7-9728d561fe2d",
+      "name": "Sticky Note"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Append row in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Append row in sheet": {
+      "main": [
+        [
+          {
+            "node": "Message a model",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Message a model": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send a message1": {
+      "main": [
+        [
+          {
+            "node": "Send a message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Message a model1": {
+      "main": [
+        [
+          {
+            "node": "Send a message1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields1": {
+      "main": [
+        [
+          {
+            "node": "Message a model1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "availableInMCP": false
+  },
+  "versionId": "76ff6c35-68d4-4802-94f1-39cb5443389b",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "544cb49618b689f5b884aea9c0993f7f85dc2a73a4d90d9054ad88faaaab424f"
+  },
+  "id": "fDhjJ_qq_n42jxvGZKoJ9",
+  "tags": []
+}
