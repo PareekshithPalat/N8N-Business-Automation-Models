@@ -1,0 +1,223 @@
+{
+  "name": "AI-Powered Email Triage System",
+  "nodes": [
+    {
+      "parameters": {
+        "pollTimes": {
+          "item": [
+            {
+              "mode": "everyMinute"
+            }
+          ]
+        },
+        "filters": {}
+      },
+      "type": "n8n-nodes-base.gmailTrigger",
+      "typeVersion": 1.3,
+      "position": [
+        0,
+        0
+      ],
+      "id": "33d61400-b511-4632-a449-0d91418ab573",
+      "name": "Gmail Trigger",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "NfBTEsnKqwDReWVo",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "models/gemini-2.5-flash",
+          "mode": "list",
+          "cachedResultName": "models/gemini-2.5-flash"
+        },
+        "messages": {
+          "values": [
+            {
+              "content": "You are a strict email classification engine.\n\nClassify the email into exactly ONE of these categories:\n\nUrgent\nSales\nSpam\nPersonal\n\nFollow these rules strictly:\n\n1. Urgent:\n   - Time-sensitive requests.\n   - Mentions deadlines such as \"ASAP\", \"EOD\", \"today\", \"by 5 PM\", \"urgent\".\n   - Requires immediate action.\n   - Internal work tasks with deadlines are Urgent.\n\n2. Sales:\n   - Promotional or marketing emails ONLY.\n   - Must contain discounts, offers, coupons, product promotions, or commercial deals.\n   - Examples: \"50% off\", \"Limited time offer\", \"Buy now\".\n   - Regular business communication is NOT Sales.\n\n3. Spam:\n   - Suspicious, scam-like, phishing, or irrelevant mass emails.\n\n4. Personal:\n   - Non-business, casual, or family/friend communication.\n\nIf an email is work-related and requests action with a deadline, classify it as Urgent.\n\nRespond with ONLY one word inside double quotes.\n\nExample:\n\"Urgent\"\n\nDo not include any extra text.\n"
+            }
+          ]
+        },
+        "jsonOutput": true,
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.googleGemini",
+      "typeVersion": 1.1,
+      "position": [
+        208,
+        0
+      ],
+      "id": "abf6e367-3702-4d66-bc76-52868eaa9335",
+      "name": "Message a model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "520cx0wrnbMiHu5O",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "7bec81a5-1cd0-49ac-94bf-3a48f51663cc",
+              "leftValue": "={{ $json.content.parts[0].text }}",
+              "rightValue": "\"Urgent\"",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        560,
+        0
+      ],
+      "id": "39abe0d6-f811-4c4f-8d56-11a8ce137ee1",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "select": "channel",
+        "channelId": {
+          "__rl": true,
+          "value": "#important-mails",
+          "mode": "name"
+        },
+        "text": "={{ $('Gmail Trigger').item.json.From }}\n{{ $('Gmail Trigger').item.json.snippet }}",
+        "otherOptions": {}
+      },
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 2.4,
+      "position": [
+        768,
+        -96
+      ],
+      "id": "67cee385-def0-40b0-a73f-6f76f8e18674",
+      "name": "Send a message",
+      "webhookId": "51e9b51b-4b70-4323-b331-611875ff2411",
+      "credentials": {
+        "slackApi": {
+          "id": "snjj27cwDwM7uTwP",
+          "name": "Slack account 3"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "select": "channel",
+        "channelId": {
+          "__rl": true,
+          "value": "C0AERN0LUBV",
+          "mode": "list",
+          "cachedResultName": "spam-mail-contents"
+        },
+        "text": "={{ $('Gmail Trigger').item.json.From }}\n{{ $('Gmail Trigger').item.json.snippet }}\n",
+        "otherOptions": {}
+      },
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 2.4,
+      "position": [
+        768,
+        96
+      ],
+      "id": "40bf3bfb-3218-4990-bdf8-ff7c83d18013",
+      "name": "Send a message1",
+      "webhookId": "c53ace35-d826-4b7f-8f94-024db9b0dd0e",
+      "credentials": {
+        "slackApi": {
+          "id": "snjj27cwDwM7uTwP",
+          "name": "Slack account 3"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "# AI-Powered Email Triage System \n\nThis system read's your Gmail and then fetches its contents . Gemini will analyze and predicts its priority . If the priority comes under urgent , the message is then sent to important channel in slack and if not important the mail contents will be shared to spam content section in slack.",
+        "height": 272,
+        "width": 416
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        0,
+        -336
+      ],
+      "id": "32d33664-1a4a-4632-92c7-157275564829",
+      "name": "Sticky Note"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Gmail Trigger": {
+      "main": [
+        [
+          {
+            "node": "Message a model",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Message a model": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Send a message",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Send a message1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "availableInMCP": false
+  },
+  "versionId": "21a771c9-287a-4fd5-b0da-99270c163742",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "544cb49618b689f5b884aea9c0993f7f85dc2a73a4d90d9054ad88faaaab424f"
+  },
+  "id": "6k0zo07GIEtC1YKZtp2rN",
+  "tags": []
+}
