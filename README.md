@@ -62,6 +62,33 @@ A high-performance lead generation and nurturing system that captures leads via 
 3. **Webhook Setup:**
    - Copy the Webhook URL and point your lead source (e.g., a Webflow or Elementor form) to this endpoint.
 
+### Automation C: Social Media Auto Repurposer
+**File:** [Social Media Auto Repurposer.json](./Social%20Media%20Auto%20Repurposer.json)
+
+#### 📝 Description
+A content strategist automation that automatically turns blog posts into platform-optimized social media content. It monitors an RSS feed, uses AI to repurpose the content for LinkedIn, Twitter, and Instagram, and publishes the results automatically.
+
+#### 🛠️ Functionality
+- **RSS Monitoring:** Continuously polls an RSS feed for new blog posts or articles.
+- **AI Content Strategist:** Uses Gemini 1.5 Flash to transform the article into:
+    - **LinkedIn Post:** Professional tone, structured for engagement (150-200 words).
+    - **Twitter Thread:** A 5-tweet sequence designed for high readability.
+    - **Instagram Caption:** A catchy summary including 5 relevant hashtags.
+- **Automated Publishing:**
+    - **LinkedIn:** Automatically creates a professional update.
+    - **Twitter:** Automatically posts the content as a tweet or thread.
+- **Structured Output:** Uses strict JSON formatting for the AI response to ensure seamless parsing between nodes.
+
+#### ⚙️ How to Run
+1. **Import the Workflow:**
+   - Import the `Social Media Auto Repurposer.json` file.
+2. **Configure Triggers & APIs:**
+   - **RSS Feed:** Enter the URL of the blog or site you want to monitor.
+   - **Google Gemini:** Provide your API key for content generation.
+   - **LinkedIn & Twitter:** Connect your respective developer accounts/credentials.
+3. **Customize Strategy:** 
+   - You can modify the system prompt in the Gemini node to change the tone or length of the generated posts.
+
 ---
 
 ## 📥 General Setup Instructions

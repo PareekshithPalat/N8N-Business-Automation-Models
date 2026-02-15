@@ -1,0 +1,190 @@
+{
+  "name": "Social Media Auto Repurposer",
+  "nodes": [
+    {
+      "parameters": {
+        "pollTimes": {
+          "item": [
+            {
+              "mode": "everyMinute"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.rssFeedReadTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "1dbbfd5d-51eb-41ba-bff8-c948fb265280",
+      "name": "RSS Feed Trigger"
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "models/gemini-2.5-flash",
+          "mode": "list",
+          "cachedResultName": "models/gemini-2.5-flash"
+        },
+        "messages": {
+          "values": [
+            {
+              "content": "You are a social media content strategist.\n\nGiven a blog post, generate platform-optimized content for:\n\n1. LinkedIn post (professional tone, 150-200 words)\n2. Twitter thread (5 tweets, concise and engaging)\n3. Instagram caption (short, engaging, includes 5 relevant hashtags)\n\nReturn strictly in JSON format:\n\n{\n  \"linkedin\": \"...\",\n  \"twitter\": [\"tweet1\", \"tweet2\", \"tweet3\", \"tweet4\", \"tweet5\"],\n  \"instagram\": \"...\"\n}\n\nDo not include markdown.\nDo not include explanations.\nReturn only valid JSON.\n"
+            }
+          ]
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.googleGemini",
+      "typeVersion": 1.1,
+      "position": [
+        208,
+        0
+      ],
+      "id": "b2d1d12d-4018-4b51-b5b1-653c758b1874",
+      "name": "Message a model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "520cx0wrnbMiHu5O",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "9b485b26-3727-4f71-816b-a66ba0494bfc",
+              "name": "linkedin",
+              "value": "={{ JSON.parse($json.content.parts[0].text).linkedin }}",
+              "type": "string"
+            },
+            {
+              "id": "fd937e08-9e45-4cfd-8ebb-f9af141ed48f",
+              "name": "Twitter",
+              "value": "={{ JSON.parse($json.content.parts[0].text).twitter }}",
+              "type": "string"
+            },
+            {
+              "id": "716ac087-4659-4014-96b0-f248b31cf007",
+              "name": "Instagram",
+              "value": "={{ JSON.parse($json.content.parts[0].text).instagram }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        560,
+        0
+      ],
+      "id": "81759212-35db-43f3-8d6b-54832e76ee2b",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "text": "={{ $json.linkedin }}",
+        "shareMediaCategory": "ARTICLE",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.linkedIn",
+      "typeVersion": 1,
+      "position": [
+        800,
+        -176
+      ],
+      "id": "e94493fb-ccd3-480b-8c9a-db603bf3149e",
+      "name": "Create a post"
+    },
+    {
+      "parameters": {
+        "text": "={{ $json.Twitter }}",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.twitter",
+      "typeVersion": 2,
+      "position": [
+        816,
+        192
+      ],
+      "id": "da63c513-0fcf-4c98-9ebc-a874e123dd53",
+      "name": "Create Tweet"
+    },
+    {
+      "parameters": {
+        "content": "# Social Media Auto Repurposer\n\nProblem: Content duplication fatigue. \nAutomation: Trigger: New blog post (RSS) Use OpenAI to: \nGenerate LinkedIn post Generate Twitter thread Generate Instagram caption Auto-post via respective APIs Impressive because: \nAI content workflow + multi-platform publishing.",
+        "height": 224,
+        "width": 528,
+        "color": 4
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        16,
+        -272
+      ],
+      "typeVersion": 1,
+      "id": "49d79ec2-d9f8-435b-94d3-ff4736223c35",
+      "name": "Sticky Note"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "RSS Feed Trigger": {
+      "main": [
+        [
+          {
+            "node": "Message a model",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Message a model": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Create a post",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Create Tweet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "availableInMCP": false
+  },
+  "versionId": "2730b4c5-ade3-4a92-80e0-3a801574d029",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "544cb49618b689f5b884aea9c0993f7f85dc2a73a4d90d9054ad88faaaab424f"
+  },
+  "id": "lzsfG4qVFtHc_-WdX6erA",
+  "tags": []
+}
