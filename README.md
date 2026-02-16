@@ -89,6 +89,31 @@ A content strategist automation that automatically turns blog posts into platfor
 3. **Customize Strategy:** 
    - You can modify the system prompt in the Gemini node to change the tone or length of the generated posts.
 
+### Automation D: Automated Meeting Notes Generator
+**File:** [Automated Meeting Notes Generator.json](./Automated%20Meeting%20Notes%20Generator.json)
+
+#### 📝 Description
+An executive assistant automation that processes raw meeting transcripts to generate concise summaries, actionable tasks, and key decisions. It automatically emails these insights to all participants and connects to Notion for archiving.
+
+#### 🛠️ Functionality
+- **Transcript Processing:** Accepts meeting transcripts via a Webhook (e.g., from Otter.ai, Zoom, or a custom script).
+- **AI Analysis:** Gemini acts as an executive assistant to extract:
+    - **Summary:** A concise overview (max 150 words).
+    - **Key Decisions:** A bulleted list of approved items.
+    - **Action Items:** Specific tasks assigned to owners.
+- **Automated Distribution:** Sends a structured email with the meeting highlights to all participants found in the payload.
+- **Notion Integration:** Linked to a Notion database for centralized record-keeping of all meeting notes.
+
+#### ⚙️ How to Run
+1. **Import the Workflow:**
+   - Import the `Automated Meeting Notes Generator.json` file.
+2. **Configure Webhook:**
+   - Ensure your meeting tool sends a JSON payload containing `transcript`, `meeting_title`, and `participants`.
+3. **Setup Credentials:**
+   - **Google Gemini:** API key for analysis.
+   - **Gmail:** For sending the summary email.
+   - **Notion:** Connect your workspace and select the target database for archiving.
+
 ---
 
 ## 📥 General Setup Instructions
