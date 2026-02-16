@@ -93,26 +93,43 @@ A content strategist automation that automatically turns blog posts into platfor
 **File:** [Automated Meeting Notes Generator.json](./Automated%20Meeting%20Notes%20Generator.json)
 
 #### 📝 Description
-An executive assistant automation that processes raw meeting transcripts to generate concise summaries, actionable tasks, and key decisions. It automatically emails these insights to all participants and connects to Notion for archiving.
+An advanced executive assistant workflow designed to transform raw meeting transcripts into structured, actionable business intelligence. It uses a specialized Gemini AI prompt to parse conversation text and distribute professional summaries via email and Notion.
 
-#### 🛠️ Functionality
-- **Transcript Processing:** Accepts meeting transcripts via a Webhook (e.g., from Otter.ai, Zoom, or a custom script).
-- **AI Analysis:** Gemini acts as an executive assistant to extract:
-    - **Summary:** A concise overview (max 150 words).
-    - **Key Decisions:** A bulleted list of approved items.
-    - **Action Items:** Specific tasks assigned to owners.
-- **Automated Distribution:** Sends a structured email with the meeting highlights to all participants found in the payload.
-- **Notion Integration:** Linked to a Notion database for centralized record-keeping of all meeting notes.
+#### 🛠️ Technical Deep Dive
+- **Trigger Payload (Webhook):**
+  - The workflow expects a `POST` request with the following JSON structure:
+    ```json
+    {
+      "meeting_title": "Q3 Planning Strategy",
+      "transcript": "Speaker A: ... Speaker B: ...",
+      "participants": ["alice@company.com", "bob@company.com"]
+    }
+    ```
+- **AI Logic (Executive Persona):**
+  - **Model:** Gemini 1.5 Flash.
+  - **System Prompt:** Configured as an "Executive Meeting Assistant" with strict output rules.
+  - **Output Schema:** Forces the AI to return a valid JSON object containing:
+    - `summary`: A high-level overview (max 150 words).
+    - `key_decisions`: An array of strings defining agreed-upon points.
+    - `action_items`: An array of objects with `task` and `owner` fields.
+- **Data Routing:**
+  - **JSON Parsing:** A set node parses the stringified AI response into usable n8n variables (`$json.Summary`, `$json.key_decisions`, etc.).
+  - **Email Dispatch:** Dynamically joins the `participants` array to send a single summary email to all attendees.
+  - **Notion Integration:** Connects to a specific Notion database (ID: `309df...`) to retrieve or verify the storage destination (customizable to *Create Page* for archiving).
 
-#### ⚙️ How to Run
-1. **Import the Workflow:**
-   - Import the `Automated Meeting Notes Generator.json` file.
-2. **Configure Webhook:**
-   - Ensure your meeting tool sends a JSON payload containing `transcript`, `meeting_title`, and `participants`.
-3. **Setup Credentials:**
-   - **Google Gemini:** API key for analysis.
-   - **Gmail:** For sending the summary email.
-   - **Notion:** Connect your workspace and select the target database for archiving.
+#### ⚙️ How to Run & Customize
+1. **Import:** Load `Automated Meeting Notes Generator.json` into n8n.
+2. **Webhook Integration:**
+   - Use a tool like **Otter.ai** or a **Zoom Webhook** to send the transcript to this workflow's URL.
+   - *Tip:* You can also use a simple cURL command or Postman to test:
+     ```bash
+     curl -X POST <YOUR_WEBHOOK_URL> -H "Content-Type: application/json" -d '{"meeting_title":"Test","transcript":"...","participants":["you@example.com"]}'
+     ```
+3. **Refine the AI Prompt:** 
+   - Open the **Message a Model** node to adjust the persona (e.g., change "Executive Assistant" to "Technical Scribe" for engineering meetings).
+4. **Update Credentials:**
+   - Link your Gmail and Notion accounts.
+   - Update the Notion Database ID in the final node to match your own "Meeting Notes" database.
 
 ---
 
