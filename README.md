@@ -4,9 +4,20 @@ A collection of professional-grade n8n automation workflows designed to streamli
 
 This repository serves as a personal portfolio of business automations developed to solve real-world operational challenges. Each model is provided as a ready-to-import JSON file.
 
+## � Table of Contents
+- [1. AI-Powered Email Triage System](#1-ai-powered-email-triage-system)
+- [2. Smart Lead Capture System](#2-smart-lead-capture-system)
+- [3. Social Media Auto Repurposer](#3-social-media-auto-repurposer)
+- [4. Automated Meeting Notes Generator](#4-automated-meeting-notes-generator)
+- [General Setup Instructions](#-general-setup-instructions)
+- [License](#-license)
+- [Contact](#-contact)
+
+---
+
 ## 🚀 Automation Catalog
 
-### Automation A: AI-Powered Email Triage System
+### 1. AI-Powered Email Triage System
 **File:** [AI-Powered Email Triage System.json](./AI-Powered%20Email%20Triage%20System.json)
 
 #### 📝 Description
@@ -36,7 +47,9 @@ An intelligent email management system that automatically monitors a Gmail inbox
 3. **Activate:**
    - Set the workflow to **Active** to start the one-minute polling cycle.
 
-### Automation B: Smart Lead Capture System
+---
+
+### 2. Smart Lead Capture System
 **File:** [Smart Lead Capture.json](./Smart%20Lead%20Capture.json)
 
 #### 📝 Description
@@ -62,7 +75,9 @@ A high-performance lead generation and nurturing system that captures leads via 
 3. **Webhook Setup:**
    - Copy the Webhook URL and point your lead source (e.g., a Webflow or Elementor form) to this endpoint.
 
-### Automation C: Social Media Auto Repurposer
+---
+
+### 3. Social Media Auto Repurposer
 **File:** [Social Media Auto Repurposer.json](./Social%20Media%20Auto%20Repurposer.json)
 
 #### 📝 Description
@@ -89,7 +104,9 @@ A content strategist automation that automatically turns blog posts into platfor
 3. **Customize Strategy:** 
    - You can modify the system prompt in the Gemini node to change the tone or length of the generated posts.
 
-### Automation D: Automated Meeting Notes Generator
+---
+
+### 4. Automated Meeting Notes Generator
 **File:** [Automated Meeting Notes Generator.json](./Automated%20Meeting%20Notes%20Generator.json)
 
 #### 📝 Description
