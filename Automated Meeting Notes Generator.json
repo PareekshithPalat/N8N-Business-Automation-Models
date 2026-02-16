@@ -1,0 +1,204 @@
+{
+  "name": "Automated Meeting Notes Generator",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "683a338f-e671-4e97-96ae-6bbbb23b6f23",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "dcd27289-3c73-4e26-84ee-989f839dada8",
+      "name": "Webhook",
+      "webhookId": "683a338f-e671-4e97-96ae-6bbbb23b6f23"
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "models/gemini-2.5-flash",
+          "mode": "list",
+          "cachedResultName": "models/gemini-2.5-flash"
+        },
+        "messages": {
+          "values": [
+            {
+              "content": "=You are an executive meeting assistant.\n\nAnalyze the meeting transcript and extract:\n\n1. A concise meeting summary (max 150 words)\n2. Key decisions made\n3. Action items with assigned owner (if mentioned)\n\nReturn strictly in valid JSON format:\n\n{\n  \"summary\": \"short summary\",\n  \"key_decisions\": [\"decision 1\", \"decision 2\"],\n  \"action_items\": [\n    {\n      \"task\": \"task description\",\n      \"owner\": \"person name or Unknown\"\n    }\n  ]\n}\n\nDo not include markdown.\nDo not include explanations.\nReturn only valid JSON.\n\nBelow i am providing the transcript :\n {{ $json.body.transcript }}"
+            }
+          ]
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.googleGemini",
+      "typeVersion": 1.1,
+      "position": [
+        208,
+        0
+      ],
+      "id": "f12a3839-6f80-4f75-be96-f5987b4a6f64",
+      "name": "Message a model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "520cx0wrnbMiHu5O",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "615a1add-0347-49b3-bcfa-53d54a51dbc1",
+              "name": "Summary",
+              "value": "={{ JSON.parse($json.content.parts[0].text).summary }}",
+              "type": "string"
+            },
+            {
+              "id": "65337935-52c4-482c-afe7-f5a806d476ef",
+              "name": "key_decisions",
+              "value": "={{ JSON.parse($json.content.parts[0].text).key_decisions }}",
+              "type": "string"
+            },
+            {
+              "id": "e0ea8568-fce4-48d8-acfd-37bdf5761bcd",
+              "name": "action_items",
+              "value": "={{ JSON.parse($json.content.parts[0].text).action_items }}",
+              "type": "string"
+            },
+            {
+              "id": "12942d08-7d13-4acd-b487-4fd835a3ccf0",
+              "name": "body.participants",
+              "value": "={{ $('Webhook').item.json.body.participants }}",
+              "type": "array"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        560,
+        0
+      ],
+      "id": "a79b5db8-5e14-4ede-a355-9155a84e3743",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $json.body.participants.join(\",\") }}\n",
+        "subject": "={{ $('Webhook').item.json.body.meeting_title }}",
+        "message": "={{ $json.Summary }}\n\n{{ $json.key_decisions }}\n\n{{ $json.action_items }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        784,
+        0
+      ],
+      "id": "c86ab17a-10bc-4bce-84f0-0e73da275cd0",
+      "name": "Send a message",
+      "webhookId": "d774e8fd-6690-4868-a02d-112bb38392b2",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "NfBTEsnKqwDReWVo",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "database",
+        "databaseId": {
+          "__rl": true,
+          "value": "309df2e4-0c9d-8087-931c-ded88b416c60",
+          "mode": "list",
+          "cachedResultName": "Meeting Notes\n",
+          "cachedResultUrl": "https://www.notion.so/309df2e40c9d8087931cded88b416c60"
+        }
+      },
+      "type": "n8n-nodes-base.notion",
+      "typeVersion": 2.2,
+      "position": [
+        992,
+        0
+      ],
+      "id": "2581f280-2585-4298-ab87-867ee4ae0d00",
+      "name": "Get a database",
+      "credentials": {
+        "notionApi": {
+          "id": "6VWutIyAERTSv5Cu",
+          "name": "Notion account 2"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Message a model",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Message a model": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Send a message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send a message": {
+      "main": [
+        [
+          {
+            "node": "Get a database",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "availableInMCP": false
+  },
+  "versionId": "03a4f5fd-31d1-4d42-b507-2118bfa37262",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "544cb49618b689f5b884aea9c0993f7f85dc2a73a4d90d9054ad88faaaab424f"
+  },
+  "id": "45YHddtwGt9cZt30A3iTV",
+  "tags": []
+}
