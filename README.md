@@ -9,6 +9,7 @@ This repository serves as a personal portfolio of business automations developed
 - [2. Smart Lead Capture System](#2-smart-lead-capture-system)
 - [3. Social Media Auto Repurposer](#3-social-media-auto-repurposer)
 - [4. Automated Meeting Notes Generator](#4-automated-meeting-notes-generator)
+- [5. Crypto & Stock Price Alert System](#5-crypto--stock-price-alert-system)
 - [General Setup Instructions](#-general-setup-instructions)
 - [License](#-license)
 - [Contact](#-contact)
@@ -147,6 +148,36 @@ An advanced executive assistant workflow designed to transform raw meeting trans
 4. **Update Credentials:**
    - Link your Gmail and Notion accounts.
    - Update the Notion Database ID in the final node to match your own "Meeting Notes" database.
+
+---
+
+### 5. Crypto & Stock Price Alert System
+**File:** [Crypto_Stock Price Alert System.json](./Crypto_Stock%20Price%20Alert%20System.json)
+
+#### 📝 Description
+A dedicated financial monitoring tool that tracks real-time market prices for cryptocurrencies (like Bitcoin) or stocks. It runs on a schedule, fetches live data, and triggers instant alerts via Slack and Telegram when specific price thresholds are crossed.
+
+#### 🛠️ Functionality
+- **Scheduled Monitoring:** Automatically runs every 30 minutes to check market status.
+- **Live Data Fetching:** Uses an HTTP Request node to pull real-time data from the CoinGecko API (configurable for other APIs).
+- **Threshold Logic:**
+    - Checks if the current price exceeds a user-defined target (e.g., BTC > $50,000).
+    - Uses an 'If' node to determine whether to trigger an alert.
+- **Multi-Channel Alerts:**
+    - **Slack:** Sends a formatted message to a specific channel.
+    - **Telegram:** Sends a text alert to your phone or group.
+
+#### ⚙️ How to Run
+1. **Import the Workflow:**
+   - Import the `Crypto_Stock Price Alert System.json` file.
+2. **Configure Triggers:**
+   - **Schedule Trigger:** Adjust the interval (default: 30 mins) to your preference.
+3. **API Setup:**
+   - **HTTP Request:** The template uses CoinGecko (no key required for basic use). You can swap this URL for any stock API (e.g., Alpha Vantage, Finnhub).
+4. **Set Thresholds:**
+   - Open the **If** node and change the value `50000` to your desired price target.
+5. **Connect Alerts:**
+   - **Slack & Telegram:** Add your bot tokens and channel IDs.
 
 ---
 
