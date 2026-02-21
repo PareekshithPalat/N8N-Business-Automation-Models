@@ -1,0 +1,207 @@
+{
+  "name": "Competitor Monitoring System",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "triggerAtHour": 9
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.3,
+      "position": [
+        -192,
+        16
+      ],
+      "id": "c06582d2-27e2-45c7-8ac9-87033a626dad",
+      "name": "Schedule Trigger"
+    },
+    {
+      "parameters": {
+        "url": "https://medium.com/feed/@wlockett",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.rssFeedRead",
+      "typeVersion": 1.2,
+      "position": [
+        16,
+        16
+      ],
+      "id": "bd6618b1-45d7-46be-b52b-eb04967bd234",
+      "name": "RSS Read"
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "models/gemini-3-pro-preview",
+          "mode": "list",
+          "cachedResultName": "models/gemini-3-pro-preview"
+        },
+        "messages": {
+          "values": [
+            {
+              "content": "=You are a competitive intelligence analyst.\n\nAnalyze the competitor blog articles and produce:\n\n1. A concise summary of each article (2-3 sentences).\n2. Key strategic themes emerging across competitors.\n3. Highlighted keywords or trends.\n4. Any potential strategic threat or opportunity.\n\nReturn strictly valid JSON in this format:\n\n{\n  \"articles\": [\n    {\n      \"title\": \"string\",\n      \"summary\": \"string\"\n    }\n  ],\n  \"themes\": [\"string\"],\n  \"keywords\": [\"string\"],\n  \"insights\": \"string\"\n}\n\nDo not include markdown.\nReturn only JSON.\n\n{{ $json.title }}\n{{ $json.link }}\n{{ $json.categories }}\n{{ $json.link }}\n{{ $json.creator }}"
+            }
+          ]
+        },
+        "jsonOutput": true,
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.googleGemini",
+      "typeVersion": 1.1,
+      "position": [
+        432,
+        16
+      ],
+      "id": "46b89161-0a8b-409c-8734-bd1e0bf1d665",
+      "name": "Message a model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "Fl1AtIQnIXQRmpdy",
+          "name": "Google Gemini(PaLM) Api account 4"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        784,
+        16
+      ],
+      "id": "6ca887c7-43ca-4a3c-8464-06b8f4e5e347",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        992,
+        16
+      ],
+      "id": "0a781c06-c749-4963-b963-8aaeae624861",
+      "name": "Send a message",
+      "webhookId": "f9ac760a-51f1-4780-8d98-b42d23b6f179",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "NfBTEsnKqwDReWVo",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        224,
+        16
+      ],
+      "id": "3c4bce3e-e2b2-457e-9178-389de3d383a8",
+      "name": "Merge"
+    },
+    {
+      "parameters": {
+        "content": "# Competitor Monitoring System Problem: \n\n### No idea what competitors publish.\n### Automation: Monitor competitor RSS \n### Summarize articles via AI Send daily digest \n### email Highlight keywords",
+        "height": 320,
+        "width": 512,
+        "color": 4
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        240,
+        -384
+      ],
+      "typeVersion": 1,
+      "id": "3b487531-68b7-4922-9dac-52f4c9ff4284",
+      "name": "Sticky Note"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "RSS Read",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "RSS Read": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 1
+          },
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Message a model": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Send a message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge": {
+      "main": [
+        [
+          {
+            "node": "Message a model",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "availableInMCP": false
+  },
+  "versionId": "05ec33db-010b-4a11-be8c-1b0af8ecbb43",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "544cb49618b689f5b884aea9c0993f7f85dc2a73a4d90d9054ad88faaaab424f"
+  },
+  "id": "vIShLl98-xQWSGLbf8hdu",
+  "tags": []
+}

@@ -10,6 +10,7 @@ This repository serves as a personal portfolio of business automations developed
 - [3. Social Media Auto Repurposer](#3-social-media-auto-repurposer)
 - [4. Automated Meeting Notes Generator](#4-automated-meeting-notes-generator)
 - [5. Crypto & Stock Price Alert System](#5-crypto--stock-price-alert-system)
+- [6. Competitor Monitoring System](#6-competitor-monitoring-system)
 - [General Setup Instructions](#-general-setup-instructions)
 - [License](#-license)
 - [Contact](#-contact)
@@ -178,6 +179,36 @@ A dedicated financial monitoring tool that tracks real-time market prices for cr
    - Open the **If** node and change the value `50000` to your desired price target.
 5. **Connect Alerts:**
    - **Slack & Telegram:** Add your bot tokens and channel IDs.
+
+---
+
+### 6. Competitor Monitoring System
+**File:** [Competitor Monitoring System.json](./Competitor%20Monitoring%20System.json)
+
+#### 📝 Description
+A competitive intelligence automation that monitors competitor activities via RSS feeds and generates strategic insights. It uses AI to analyze content, identify themes, and provide actionable business intelligence in a daily digest format.
+
+#### 🛠️ Functionality
+- **Scheduled Monitoring:** Runs daily (at 9 AM) to check for new content from competitors.
+- **RSS Content Ingestion:** Automatically reads from specified competitor RSS feeds (e.g., Medium blogs).
+- **AI Intelligence Analyst:** Uses Gemini (Pro-preview) to:
+    - Summarize each article concisely.
+    - Identify strategic themes across all ingested items.
+    - Extract key trends and keywords.
+    - Detect potential threats or opportunities for your business.
+- **Merge Logic:** Consolidates multiple data streams into a single analytical context for the AI.
+- **Automated Digest:** Sends a professional intelligence report directly to your inbox via Gmail.
+
+#### ⚙️ How to Run
+1. **Import the Workflow:** Import `Competitor Monitoring System.json`.
+2. **Setup Competitor Sources:**
+   - Update the **RSS Read** node with your competitor's feed URL.
+3. **AI Configuration:**
+   - Provide your Google Gemini API key.
+   - Adjust the analyst persona in the prompt if you need specific industry focus.
+4. **Digest Settings:**
+   - Connect your Gmail account.
+   - Set the destination email address in the **Send a message** node.
 
 ---
 
