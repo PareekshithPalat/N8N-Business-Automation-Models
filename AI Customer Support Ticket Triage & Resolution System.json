@@ -1,0 +1,821 @@
+{
+  "name": "AI Customer Support Ticket Triage & Resolution System",
+  "nodes": [
+    {
+      "parameters": {
+        "pollTimes": {
+          "item": [
+            {
+              "mode": "everyMinute"
+            }
+          ]
+        },
+        "filters": {}
+      },
+      "type": "n8n-nodes-base.gmailTrigger",
+      "typeVersion": 1.3,
+      "position": [
+        0,
+        0
+      ],
+      "id": "dc1ab765-401c-47cb-bd24-bdcab92d7ab8",
+      "name": "Gmail Trigger",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "NfBTEsnKqwDReWVo",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "models/gemini-2.5-flash",
+          "mode": "list",
+          "cachedResultName": "models/gemini-2.5-flash"
+        },
+        "messages": {
+          "values": [
+            {
+              "content": "=You are a customer support classification system.\n\nAnalyze the support email and classify it into one category:\n\nBilling Issue\nTechnical Bug\nRefund Request\nAccount Access\nGeneral Inquiry\nHigh Priority Complaint\n\nReturn strictly JSON:\n\n{\n  \"category\": \"...\"\n}\n\n{{ $json.Subject }}\n{{ $json.snippet }}"
+            }
+          ]
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.googleGemini",
+      "typeVersion": 1.1,
+      "position": [
+        208,
+        0
+      ],
+      "id": "92139bfa-5293-492a-89ab-da0db709e704",
+      "name": "Message a model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "Ml7gp53sXPzxoor5",
+          "name": "Google Gemini(PaLM) Api account 5"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "2529d81f-4649-4b51-b292-f33b07f33177",
+              "name": "content.parts[0].text",
+              "value": "={{ $json.content.parts[0].text }}\n\n{{ $('Gmail Trigger').item.json.Subject }}\n\n{{ $('Gmail Trigger').item.json.From }}\n\n{{ $('Gmail Trigger').item.json.snippet }}",
+              "type": "string"
+            },
+            {
+              "id": "9ca9c201-c27b-4385-8048-18ff3284fc05",
+              "name": "",
+              "value": "",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        560,
+        0
+      ],
+      "id": "4c4109a4-8c86-46da-a358-1601d2529915",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ JSON.parse($json.content.parts[0].text.match(/\\{[\\s\\S]*\\}/)[0]).category }}",
+                    "rightValue": "Billing Issue",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "id": "781d8d5e-3cf6-4864-9968-e6c9bbd62a55"
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "f1fc3b35-2de2-4461-9df3-43a5a6393c00",
+                    "leftValue": "={{ JSON.parse($json.content.parts[0].text.match(/\\{[\\s\\S]*\\}/)[0]).category }}",
+                    "rightValue": "Technical Bug",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "127df6e6-605b-4109-93a1-7eb8934fec42",
+                    "leftValue": "={{ JSON.parse($json.content.parts[0].text.match(/\\{[\\s\\S]*\\}/)[0]).category }}",
+                    "rightValue": "Refund Request",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "78defdcd-7867-488a-a0fb-04d048eb6686",
+                    "leftValue": "={{ JSON.parse($json.content.parts[0].text.match(/\\{[\\s\\S]*\\}/)[0]).category }}",
+                    "rightValue": "Account Access",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "32f941ac-793c-4a35-acd2-3a16a403236a",
+                    "leftValue": "={{ JSON.parse($json.content.parts[0].text.match(/\\{[\\s\\S]*\\}/)[0]).category }}",
+                    "rightValue": "General Inquiry",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "d361ee9c-f18f-4925-ae95-aa197f49d7c9",
+                    "leftValue": "={{ JSON.parse($json.content.parts[0].text.match(/\\{[\\s\\S]*\\}/)[0]).category }}",
+                    "rightValue": "High Priority Complaint",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.4,
+      "position": [
+        768,
+        -64
+      ],
+      "id": "44c05d93-90fd-4c9e-b618-7eb97c596c9d",
+      "name": "Switch"
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "models/gemini-2.5-flash",
+          "mode": "list",
+          "cachedResultName": "models/gemini-2.5-flash"
+        },
+        "messages": {
+          "values": [
+            {
+              "content": "=You are a professional customer support agent.\n\nWrite a short helpful reply to the customer.\n\nBe friendly and concise.\nAlso create an professional and content oriented subject. only one good subject should be generated.\n\n {{ $json.content.parts[0].text }}"
+            }
+          ]
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.googleGemini",
+      "typeVersion": 1.1,
+      "position": [
+        1136,
+        -688
+      ],
+      "id": "b3b559a8-f78e-4106-b286-97a5f7ea1ddb",
+      "name": "Message a model1",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "Ml7gp53sXPzxoor5",
+          "name": "Google Gemini(PaLM) Api account 5"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "models/gemini-2.5-flash",
+          "mode": "list",
+          "cachedResultName": "models/gemini-2.5-flash"
+        },
+        "messages": {
+          "values": [
+            {
+              "content": "=You are a professional customer support agent.\n\nWrite a short helpful reply to the customer.\n\nBe friendly and concise.\n\nAlso create an professional and content oriented subject. only one good subject should be generated.\n\n{{ $json.content.parts[0].text }}"
+            }
+          ]
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.googleGemini",
+      "typeVersion": 1.1,
+      "position": [
+        1152,
+        -432
+      ],
+      "id": "52d3a606-ea6e-44ea-b32e-7e3d116c3229",
+      "name": "Message a model2",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "Ml7gp53sXPzxoor5",
+          "name": "Google Gemini(PaLM) Api account 5"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "models/gemini-2.5-flash",
+          "mode": "list",
+          "cachedResultName": "models/gemini-2.5-flash"
+        },
+        "messages": {
+          "values": [
+            {
+              "content": "=You are a professional customer support agent.\n\nWrite a short helpful reply to the customer.\n\nBe friendly and concise.\n\nAlso create an professional and content oriented subject. only one good subject should be generated.\n\n{{ $json.content.parts[0].text }}"
+            }
+          ]
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.googleGemini",
+      "typeVersion": 1.1,
+      "position": [
+        1152,
+        -176
+      ],
+      "id": "c0506858-df1c-4da1-a104-c6090833b53e",
+      "name": "Message a model3",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "Ml7gp53sXPzxoor5",
+          "name": "Google Gemini(PaLM) Api account 5"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "models/gemini-2.5-flash",
+          "mode": "list",
+          "cachedResultName": "models/gemini-2.5-flash"
+        },
+        "messages": {
+          "values": [
+            {
+              "content": "=You are a professional customer support agent.\n\nWrite a short helpful reply to the customer.\n\nBe friendly and concise.\n\nAlso create an professional and content oriented subject. only one good subject should be generated.\n\n{{ $json.content.parts[0].text }}"
+            }
+          ]
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.googleGemini",
+      "typeVersion": 1.1,
+      "position": [
+        1152,
+        128
+      ],
+      "id": "ca5b1465-7862-4493-abd1-6ad395ad3f0e",
+      "name": "Message a model4",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "Ml7gp53sXPzxoor5",
+          "name": "Google Gemini(PaLM) Api account 5"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "models/gemini-2.5-flash",
+          "mode": "list",
+          "cachedResultName": "models/gemini-2.5-flash"
+        },
+        "messages": {
+          "values": [
+            {
+              "content": "=You are a professional customer support agent.\n\nWrite a short helpful reply to the customer.\n\nBe friendly and concise.\n\nAlso create an professional and content oriented subject. only one good subject should be generated.\n\n{{ $json.content.parts[0].text }}"
+            }
+          ]
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.googleGemini",
+      "typeVersion": 1.1,
+      "position": [
+        1152,
+        384
+      ],
+      "id": "4ddd8aa8-78df-4d94-8596-4e5fd5516e4d",
+      "name": "Message a model5",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "Ml7gp53sXPzxoor5",
+          "name": "Google Gemini(PaLM) Api account 5"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "models/gemini-2.5-flash",
+          "mode": "list",
+          "cachedResultName": "models/gemini-2.5-flash"
+        },
+        "messages": {
+          "values": [
+            {
+              "content": "=You are a professional customer support agent.\n\nWrite a short helpful reply to the customer.\n\nBe friendly and concise.\n\nAlso create an professional and content oriented subject. only one good subject should be generated.\n\n{{ $json.content.parts[0].text }}"
+            }
+          ]
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.googleGemini",
+      "typeVersion": 1.1,
+      "position": [
+        1152,
+        656
+      ],
+      "id": "01a425f5-9cf7-42c5-9f6d-f2841c4a30ad",
+      "name": "Message a model6",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "Ml7gp53sXPzxoor5",
+          "name": "Google Gemini(PaLM) Api account 5"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $('Gmail Trigger').item.json.From.match(/<([^>]+)>/)?.[1] || $('Gmail Trigger').item.json.From }}",
+        "subject": "={{ $json.content.parts[0].text.match(/Subject:\\s*(.*)/)[1] }}",
+        "message": "={{ $json.content.parts[0].text.replace(/Subject:.*\\n\\n/, '') }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        1696,
+        -32
+      ],
+      "id": "ee389ba0-c69c-4449-b5a8-16a1aa7fe777",
+      "name": "Send a message",
+      "webhookId": "506ac09d-9040-4a8e-9aa5-652972ea8999",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "NfBTEsnKqwDReWVo",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "databasePage",
+        "databaseId": {
+          "__rl": true,
+          "value": "31ddf2e4-0c9d-80d2-ab7e-d2534d94834b",
+          "mode": "list",
+          "cachedResultName": "Support Tickets",
+          "cachedResultUrl": "https://www.notion.so/31ddf2e40c9d80d2ab7ed2534d94834b"
+        },
+        "propertiesUi": {
+          "propertyValues": [
+            {
+              "key": "Category|rich_text",
+              "textContent": "={{ JSON.parse($('Message a model').item.json.content.parts[0].text.replace(/```json|```/g,'')).category }}"
+            },
+            {
+              "key": "Customer Email|rich_text",
+              "textContent": "={{ $('Gmail Trigger').item.json.From.match(/<([^>]+)>/)?.[1] || $('Gmail Trigger').item.json.From }}"
+            },
+            {
+              "key": "Date|date",
+              "timezone": "Asia/Calcutta"
+            },
+            {
+              "key": "Priority|select",
+              "selectValue": "Low Priority"
+            },
+            {
+              "key": "Response Sent|checkbox",
+              "checkboxValue": "={{ false }}"
+            },
+            {
+              "key": "Status|select",
+              "selectValue": "="
+            },
+            {
+              "key": "Summary|rich_text",
+              "textContent": "="
+            },
+            {
+              "key": "Title|title",
+              "title": "="
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.notion",
+      "typeVersion": 2.2,
+      "position": [
+        1904,
+        -32
+      ],
+      "id": "c2ef9dd2-e290-403b-bda4-b6c22b4cf881",
+      "name": "Create a database page",
+      "credentials": {
+        "notionApi": {
+          "id": "pYb9CnfCuv8yQL7S",
+          "name": "Notion account 4"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "82ce29ec-8824-4cb2-bd2b-275205d9fba7",
+              "leftValue": "={{ $json.property_priority }}",
+              "rightValue": "High Priority",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        2112,
+        -32
+      ],
+      "id": "50b24940-331b-4187-b80a-c0c9c2b17eb7",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "select": "channel",
+        "channelId": {
+          "__rl": true,
+          "value": "C0AK4GCCT0D",
+          "mode": "list",
+          "cachedResultName": "priority-mail-analyzer"
+        },
+        "text": "={{ $('Gmail Trigger').item.json.From }}\n{{ $('Gmail Trigger').item.json.Subject }}\n{{ $('Gmail Trigger').item.json.snippet }}\nThe response given by our model was \n{{ $('Message a model1').item.json.content.parts[0].text }}\n\nThis is an high priority suppoer required action so please complete this as fast as possible.",
+        "otherOptions": {}
+      },
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 2.4,
+      "position": [
+        2320,
+        -128
+      ],
+      "id": "669ca43b-55cc-424b-8ecf-0575786ed94e",
+      "name": "Send a message1",
+      "webhookId": "85842c11-7385-4a10-bf3a-0e63fff0d263",
+      "credentials": {
+        "slackApi": {
+          "id": "snjj27cwDwM7uTwP",
+          "name": "Slack account 3"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "select": "channel",
+        "channelId": {
+          "__rl": true,
+          "value": "C0AK1HQS1QB",
+          "mode": "list",
+          "cachedResultName": "customer-support"
+        },
+        "text": "={{ $('Gmail Trigger').item.json.From }} {{ $('Gmail Trigger').item.json.Subject }} {{ $('Gmail Trigger').item.json.snippet }} The response given by our model was  {{ $('Message a model1').item.json.content.parts[0].text }} ",
+        "otherOptions": {}
+      },
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 2.4,
+      "position": [
+        2320,
+        64
+      ],
+      "id": "5be24557-6a3c-44d6-9e26-23c2499cf3be",
+      "name": "Send a message2",
+      "webhookId": "5a184c6a-a1b3-403f-87c7-935cc11fb5e0",
+      "credentials": {
+        "slackApi": {
+          "id": "snjj27cwDwM7uTwP",
+          "name": "Slack account 3"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Gmail Trigger": {
+      "main": [
+        [
+          {
+            "node": "Message a model",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Message a model": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Switch",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch": {
+      "main": [
+        [
+          {
+            "node": "Message a model1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Message a model2",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Message a model3",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Message a model4",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Message a model5",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Message a model6",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Message a model1": {
+      "main": [
+        [
+          {
+            "node": "Send a message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Message a model2": {
+      "main": [
+        [
+          {
+            "node": "Send a message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Message a model3": {
+      "main": [
+        [
+          {
+            "node": "Send a message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Message a model4": {
+      "main": [
+        [
+          {
+            "node": "Send a message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Message a model5": {
+      "main": [
+        [
+          {
+            "node": "Send a message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Message a model6": {
+      "main": [
+        [
+          {
+            "node": "Send a message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send a message": {
+      "main": [
+        [
+          {
+            "node": "Create a database page",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create a database page": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Send a message1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Send a message2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "availableInMCP": false
+  },
+  "versionId": "70e32e7f-5af5-42c2-b278-5b67932a1184",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "544cb49618b689f5b884aea9c0993f7f85dc2a73a4d90d9054ad88faaaab424f"
+  },
+  "id": "8-gmO6CjOia8rkDV4otyW",
+  "tags": []
+}

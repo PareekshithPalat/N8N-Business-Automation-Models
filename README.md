@@ -11,6 +11,7 @@ This repository serves as a personal portfolio of business automations developed
 - [4. Automated Meeting Notes Generator](#4-automated-meeting-notes-generator)
 - [5. Crypto & Stock Price Alert System](#5-crypto--stock-price-alert-system)
 - [6. Competitor Monitoring System](#6-competitor-monitoring-system)
+- [7. AI Customer Support Ticket Triage & Resolution System](#7-ai-customer-support-ticket-triage--resolution-system)
 - [General Setup Instructions](#-general-setup-instructions)
 - [License](#-license)
 - [Contact](#-contact)
@@ -209,6 +210,32 @@ A competitive intelligence automation that monitors competitor activities via RS
 4. **Digest Settings:**
    - Connect your Gmail account.
    - Set the destination email address in the **Send a message** node.
+
+---
+
+### 7. AI Customer Support Ticket Triage & Resolution System
+**File:** [AI Customer Support Ticket Triage & Resolution System.json](./AI%20Customer%20Support%20Ticket%20Triage%20&%20Resolution%20System.json)
+
+#### 📝 Description
+A comprehensive AI-driven customer support ecosystem that automates the entire lifecycle of a support ticket—from initial email ingestion and intelligent classification to workspace logging, Slack notifications, and personalized auto-replies.
+
+#### 🛠️ Functionality
+- **Dual-Layer AI Logic:** 
+    - **Triage:** Uses Gemini AI to categorize incoming emails into 6 distinct types: `Billing Issue`, `Technical Bug`, `Refund Request`, `Account Access`, `General Inquiry`, and `High Priority Complaint`.
+    - **Resolution:** A second AI layer generates professional, context-aware responses tailored to the specific category and customer message.
+- **Workflow Persistence (Notion):** Automatically logs every ticket in a centralized **Notion** database with metadata including category, customer email, and priority.
+- **Automated Communication:** Sends the AI-crafted response back to the customer via **Gmail** immediately.
+- **Emergency Escalation:** Detects `High Priority` issues and instantly alerts the support team via a dedicated **Slack** channel (`#priority-mail-analyzer`).
+
+#### ⚙️ How to Run
+1. **Import the Workflow:** Use the `AI Customer Support Ticket Triage & Resolution System.json` file.
+2. **Setup Workspace:**
+   - **Notion:** Connect your database and ensure properties (Category, Email, Priority, etc.) match the workflow schema.
+   - **Slack:** Configure the channel IDs for the general and priority-based notifications.
+3. **Configure AI & Mail:**
+   - **Google Gemini:** Add your API key.
+   - **Gmail:** Authenticate your support email account.
+4. **Activate:** Set to active to begin processing incoming support requests.
 
 ---
 
